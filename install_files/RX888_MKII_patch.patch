@@ -1,0 +1,60 @@
+diff --git a/src/librx888.c b/src/librx888.c
+index 430739d..de7944d 100644
+--- a/src/librx888.c
++++ b/src/librx888.c
+@@ -47,7 +47,13 @@ enum rx888_command {
+     STARTADC = 0xB2,
+     STOPFX3 = 0xAB,
+     R820T2STDBY = 0xB8,
+-    GPIOFX3 = 0xAD
++    GPIOFX3 = 0xAD,
++    SETARGFX3 = 0xB6
++};
++
++enum rx888_argument {
++    AD8340_VGA = 11,
++    DAT31_ATT = 10,
+ };
+ 
+ // Bitmasks for GPIO pins
+@@ -125,6 +131,24 @@ static int rx888_send_command(struct libusb_device_handle *dev_handle,
+   return 0;
+ }
+ 
++static int rx888_send_argument(struct libusb_device_handle *dev_handle,
++                                 enum rx888_argument cmd,uint32_t data)
++{
++  /* Send the control message. */
++  uint8_t zero = 0;
++  int ret = libusb_control_transfer(
++      dev_handle, LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_ENDPOINT_OUT, SETARGFX3, data, cmd,
++      (unsigned char *)&zero, sizeof(zero), CTRL_TIMEOUT);
++
++  if (ret < 0) {
++    fprintf(stderr, "Could not send argument: 0x%X with data: %d. Error : %s.\n",
++            cmd, data, libusb_error_name(ret));
++    return -1;
++  }
++
++  return 0;
++}
++
+ int rx888_set_hf_attenuation(rx888_dev_t *dev, double rf_gain)
+ {
+     if (!dev)
+@@ -436,10 +460,14 @@ int rx888_open(rx888_dev_t **out_dev, uint32_t index)
+ 
+     dev->dev_lost = false;
+ 
+-    dev->gpio_state = BIAS_HF;
++    // dev->gpio_state = BIAS_HF;
++    dev->gpio_state = 0;
+     *out_dev = dev;
+     rx888_send_command(dev->dev_handle, R820T2STDBY, 0);
+     rx888_send_command(dev->dev_handle, STOPFX3, 0);
++    // Change the number below to change gain, 0 - 127 for -11 - 17dB voltage gain; 128 - 255 for 6 - 34 dB gain.
++    rx888_send_argument(dev->dev_handle, AD8340_VGA, 157);
++    rx888_send_argument(dev->dev_handle, DAT31_ATT, 0);
+     rx888_send_command(dev->dev_handle, STARTADC, dev->sample_rate);
+     rx888_send_command(dev->dev_handle, STARTFX3, 0);
+     return 0;
