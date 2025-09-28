@@ -339,6 +339,7 @@ if __name__ == "__main__":
     n_integration = int(args.integration)
 
     # Path to store frequency data temporarily
+    os.makedirs("temp_data", exist_ok=True)
     path_freq = f"temp_data/freq.bin"
 
     # Prepare for the data adquisition
