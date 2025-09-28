@@ -196,7 +196,7 @@ def process_samples(store_queue, schedule_time, FFT_size, path_time, path_header
     sleep_seconds = (target_datetime - datetime.now()).total_seconds()  # Time calculated to sleep
     if sleep_seconds > 0:
         print(f'INFO: Sleeping for {sleep_seconds:.2f} seconds until {schedule_time}...')
-        #time.sleep(sleep_seconds)
+        time.sleep(sleep_seconds)
     
     print(f'INFO: Starting acquisition for {schedule_time}, lasting for 15 minutes...')
 
