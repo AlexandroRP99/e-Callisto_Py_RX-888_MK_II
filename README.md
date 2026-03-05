@@ -1,5 +1,13 @@
 # e-Callisto_Py_RX-888_MK_II
-## This project provides system to use the SDR RX-888 MK II as a receiver for the e-CALLISTO network.
+### This project provides system to use the SDR RX-888 MK II as a receiver for the e-CALLISTO network.
+
+## Previous work used
+
+As a basis for the development of this project for the RX-888 MK II, the project developed as a Master's Thesis by the user [@alexmfz](https://github.com/alexmfz) for the SDR HackRF One has been used.
+
+[Link to the code for HackRF One](https://github.com/alexmfz/hackrf/tree/main/executables)
+
+## Installation and use
 
 The steps for its use and installation are the following:
 
